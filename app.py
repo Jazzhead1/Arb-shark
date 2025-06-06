@@ -17,12 +17,15 @@ threshold = st.slider("Minimum Arbitrage % to Alert", min_value=0.1, max_value=1
 refresh_sec = st.selectbox("Refresh Every (seconds)", [5, 10, 15, 30, 60], index=1)
 
 # Supported exchanges
+# Supported exchanges (remove coinbasepro to avoid errors)
 exchanges = {
     "Binance": ccxt.binance(),
     "Kraken": ccxt.kraken(),
-    "Coinbase": ccxt.coinbasepro(),
     "KuCoin": ccxt.kucoin(),
     "Bybit": ccxt.bybit(),
+    # "Coinbase": ccxt.coinbasepro(),  ← Removed because it's deprecated
+}
+
 }
 
 def fetch_price(exchange_obj, symbol):
