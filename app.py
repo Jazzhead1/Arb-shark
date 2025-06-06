@@ -26,7 +26,7 @@ exchanges = {
     # "Coinbase": ccxt.coinbasepro(),  ← Removed because it's deprecated
 }
 
-}
+
 
 def fetch_price(exchange_obj, symbol):
     try:
