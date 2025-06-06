@@ -1,5 +1,12 @@
 import streamlit as st
 import ccxt
+
+# Load Binance with secrets
+binance = ccxt.binance({
+    'apiKey': st.secrets["binance"]["api_key"],
+    'secret': st.secrets["binance"]["secret"],
+})
+
 import time
 
 st.set_page_config(page_title="Crypto Arbitrage Scanner", layout="centered")
