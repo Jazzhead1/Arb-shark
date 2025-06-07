@@ -6,18 +6,10 @@ import time
 st.title("🤖 Arbitrage Scanner")
 st.write("Real-time crypto arbitrage opportunities across exchanges")
 
-# Load Binance using Streamlit secrets (safer than hardcoding)
-binance = ccxt.binance({
-    'apiKey': st.secrets["binance"]["api_key"],
-    'secret': st.secrets["binance"]["secret"]
-})
-
-# List of exchanges
+# List of supported exchanges (Binance and Bybit removed)
 exchanges = {
-    "Binance": binance,
     "Kraken": ccxt.kraken(),
-    "KuCoin": ccxt.kucoin(),
-    "Bybit": ccxt.bybit()
+    "KuCoin": ccxt.kucoin()
 }
 
 symbol = "BTC/USDT"
