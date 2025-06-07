@@ -1,51 +1,66 @@
 import streamlit as st
 import ccxt
-import pandas as pd
 import time
 
-st.title("🤖 Arbitrage Scanner")
-st.write("Real-time crypto arbitrage opportunities across exchanges")
+st.set_page_config(page_title="Crypto Arbitrage Scanner", layout="centered")
 
-# List of supported exchanges (Binance and Bybit removed)
+st.title("📈 Real-Time Arbitrage Scanner")
+st.markdown("Monitor price differences across exchanges and spot profit opportunities.")
+
+# Select your trading pair
+symbol = st.selectbox("Select Crypto Pair", ["BTC/USDT", "ETH/USDT", "XRP/USDT", "SOL/USDT"])
+
+# Profit threshold
+threshold = st.slider("Minimum Arbitrage % to Alert", min_value=0.1, max_value=10.0, value=1.0)
+
+# Set update frequency
+refresh_sec = st.selectbox("Refresh Every (seconds)", [5, 10, 15, 30, 60], index=1)
+
+# Supported exchanges
 exchanges = {
+    "Binance": ccxt.binance(),
     "Kraken": ccxt.kraken(),
-    "KuCoin": ccxt.kucoin()
+    "Coinbase": ccxt.coinbasepro(),
+    "KuCoin": ccxt.kucoin(),
+    "Bybit": ccxt.bybit(),
 }
-
-symbol = "BTC/USDT"
 
 def fetch_price(exchange_obj, symbol):
     try:
         ticker = exchange_obj.fetch_ticker(symbol)
         return ticker['last']
     except Exception as e:
-        st.write(f"❌ {exchange_obj.id}: {e}")
         return None
 
-# Run scanner every 30 seconds
+placeholder = st.empty()
+
 while True:
-    st.subheader(f"📈 Prices for {symbol}")
-    prices = {}
+    with placeholder.container():
+        st.subheader(f"🔍 Prices for {symbol}")
 
-    for name, exchange in exchanges.items():
-        price = fetch_price(exchange, symbol)
-        if price:
-            prices[name] = price
+        prices = {}
+        for name, ex in exchanges.items():
+            price = fetch_price(ex, symbol)
+            if price:
+                prices[name] = price
+                st.write(f"{name}: ${price:,.2f}")
+            else:
+                st.write(f"{name}: ❌ Not available")
 
-    if len(prices) >= 2:
-        df = pd.DataFrame(prices.items(), columns=["Exchange", "Price"]).sort_values(by="Price")
-        st.dataframe(df)
+        if len(prices) >= 2:
+            low_ex = min(prices, key=prices.get)
+            high_ex = max(prices, key=prices.get)
 
-        low = df.iloc[0]
-        high = df.iloc[-1]
-        spread = high["Price"] - low["Price"]
-        profit_percent = (spread / low["Price"]) * 100
+            low_price = prices[low_ex]
+            high_price = prices[high_ex]
+            spread = high_price - low_price
+            profit_pct = (spread / low_price) * 100
 
-        st.success(f"💰 Potential Arbitrage: Buy on {low['Exchange']} at {low['Price']:.2f}, "
-                   f"Sell on {high['Exchange']} at {high['Price']:.2f} → Profit: {profit_percent:.2f}%")
-    else:
-        st.warning("⚠️ Not enough data to compare exchanges")
+            if profit_pct >= threshold:
+                st.success(f"💰 Arbitrage Opportunity! Buy on **{low_ex}** at ${low_price:.2f}, sell on **{high_ex}** at ${high_price:.2f} → Profit: **{profit_pct:.2f}%**")
+            else:
+                st.info(f"📊 Spread: {profit_pct:.2f}% — below threshold")
+        else:
+            st.warning("Not enough price data available.")
 
-    st.write("⏱ Refreshing in 30 seconds...")
-    time.sleep(30)
-    st.rerun()
+    time.sleep(refresh_sec)
