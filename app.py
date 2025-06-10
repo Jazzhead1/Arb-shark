@@ -15,23 +15,25 @@ exchanges = {
     "KuCoin": kucoin
 }
 
-# Symbol mapping: Exchange-specific symbol names
+# Exchange-specific trading pairs
 symbol_map = {
-    "BTC": {"KuCoin": "BTC/USDT"},  # Kraken removed
+    "BTC": {"KuCoin": "BTC/USDT"},  # Kraken removed for BTC
     "ETH": {"Kraken": "ETH/USDT", "KuCoin": "ETH/USDT"},
     "SOL": {"Kraken": "SOL/USDT", "KuCoin": "SOL/USDT"},
-    "XRP": {"Kraken": "XRP/USD",  "KuCoin": "XRP/USDT"}
+    "XRP": {"Kraken": "XRP/USD", "KuCoin": "XRP/USDT"}
 }
 
+# Debug-friendly fetcher
 def fetch_price(exchange_obj, symbol):
     try:
         ticker = exchange_obj.fetch_ticker(symbol)
+        st.write(f"✅ Fetched {symbol} from {exchange_obj.id}: {ticker['last']}")
         return ticker['last']
     except Exception as e:
-        st.write(f"❌ {exchange_obj.id} {symbol}: {e}")
+        st.error(f"❌ Error fetching {symbol} from {exchange_obj.id}: {e}")
         return None
 
-# Main loop: Refreshes all assets every 30 seconds
+# Main loop
 while True:
     for asset, exchange_symbols in symbol_map.items():
         st.subheader(f"📈 Prices for {asset}")
