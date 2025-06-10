@@ -3,8 +3,37 @@ import ccxt
 import pandas as pd
 import time
 
-st.title("Arbitrage Scanner")
+# --- Styled Title ---
+st.markdown(
+    "<h1 style='text-align: center; color: #00BFFF;'>🌊 ArbSurfer: Ride the Crypto Waves</h1>",
+    unsafe_allow_html=True
+)
 
+# --- Sleek UI CSS Styling ---
+st.markdown(
+    """
+    <style>
+        .stDataFrame {
+            border: 1px solid #00BFFF;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .stButton>button {
+            background-color: #00BFFF;
+            color: white;
+            font-weight: bold;
+            border-radius: 8px;
+            padding: 8px 16px;
+        }
+        .block-container {
+            padding-top: 2rem;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# --- Initialize Exchanges ---
 kraken = ccxt.kraken()
 kucoin = ccxt.kucoin()
 
@@ -12,7 +41,7 @@ kraken.load_markets()
 kucoin.load_markets()
 
 symbol_map = {
-    "BTC": {"Kraken": "BTC/USD", "KuCoin": "BTC/USDT"},
+    "BTC": {"Kraken": "XBT/USD", "KuCoin": "BTC/USDT"},
     "ETH": {"Kraken": "ETH/USDT", "KuCoin": "ETH/USDT"},
     "SOL": {"Kraken": "SOL/USDT", "KuCoin": "SOL/USDT"},
     "XRP": {"Kraken": "XRP/USD", "KuCoin": "XRP/USDT"}
@@ -32,7 +61,7 @@ def fetch_price(exchange_obj, symbol):
 
 while True:
     for asset, exchange_symbols in symbol_map.items():
-        st.subheader(f"Prices for {asset}")
+        st.subheader(f"📊 Prices for {asset}")
         prices = {}
         for exchange_name, exchange_obj in {"Kraken": kraken, "KuCoin": kucoin}.items():
             symbol = exchange_symbols.get(exchange_name)
@@ -47,9 +76,9 @@ while True:
             high = df.iloc[-1]
             spread = high["Price"] - low["Price"]
             profit_percent = (spread / low["Price"]) * 100
-            st.success(f"Buy on {low['Exchange']} at {low['Price']:.4f}, Sell on {high['Exchange']} at {high['Price']:.4f} → Profit: {profit_percent:.2f}%")
+            st.success(f"💸 Buy on {low['Exchange']} at {low['Price']:.4f}, Sell on {high['Exchange']} at {high['Price']:.4f} → Profit: {profit_percent:.2f}%")
         else:
-            st.warning(f"Not enough data for {asset}")
-    st.write("Refreshing in 30 seconds...")
+            st.warning(f"⚠️ Not enough data for {asset}")
+    st.info("🔄 Refreshing in 30 seconds...")
     time.sleep(30)
     st.experimental_rerun()
