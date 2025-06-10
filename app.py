@@ -19,7 +19,7 @@ symbol_map = {
 }
 
 def fetch_price(exchange_obj, symbol):
-    if symbol == "BTC/USDT":
+    if symbol == "XBT/USDT":
         st.warning(f"Skipping unsupported pair: {symbol}")
         return None
     try:
@@ -51,6 +51,5 @@ while True:
         else:
             st.warning(f"Not enough data for {asset}")
     st.write("Refreshing in 30 seconds...")
-    if st.button("🔄 Refresh Prices"):
-    st.rerun()
-
+    time.sleep(30)
+    st.experimental_rerun()
