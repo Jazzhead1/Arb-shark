@@ -15,9 +15,9 @@ exchanges = {
     "KuCoin": kucoin
 }
 
-# Symbol mapping (per exchange)
+# Symbol mapping: Exchange-specific symbol names
 symbol_map = {
-    "BTC": {"Kraken": "XBT/USDT", "KuCoin": "BTC/USDT"},
+    "BTC": {"KuCoin": "BTC/USDT"},  # Kraken removed
     "ETH": {"Kraken": "ETH/USDT", "KuCoin": "ETH/USDT"},
     "SOL": {"Kraken": "SOL/USDT", "KuCoin": "SOL/USDT"},
     "XRP": {"Kraken": "XRP/USD",  "KuCoin": "XRP/USDT"}
@@ -31,7 +31,7 @@ def fetch_price(exchange_obj, symbol):
         st.write(f"❌ {exchange_obj.id} {symbol}: {e}")
         return None
 
-# Main loop
+# Main loop: Refreshes all assets every 30 seconds
 while True:
     for asset, exchange_symbols in symbol_map.items():
         st.subheader(f"📈 Prices for {asset}")
