@@ -1,13 +1,13 @@
 import streamlit as st
 import ccxt
 import pandas as pd
-from streamlit_autorefresh import st_autorefresh
-
-# Optional auto-refresh every 30 sec
-st_autorefresh(interval=30 * 1000, key="data_refresh")
+import time
 
 st.set_page_config(page_title="ArbSurfer", layout="wide")
 st.title("🌊 ArbSurfer — Crypto Arbitrage Scanner")
+
+# Sidebar refresh timer
+refresh_rate = st.sidebar.slider("Refresh rate (seconds)", min_value=10, max_value=120, value=30)
 
 kraken = ccxt.kraken()
 kucoin = ccxt.kucoin()
@@ -48,3 +48,8 @@ for asset, exchange_symbols in symbol_map.items():
         st.success(f"Buy on {low['Exchange']} → Sell on {high['Exchange']} | 💰 Profit: {profit_pct:.2f}%")
     else:
         st.warning(f"Not enough data for {asset}")
+
+# Refresh timer
+st.caption(f"⏳ Refreshing every {refresh_rate} seconds...")
+time.sleep(refresh_rate)
+st.experimental_rerun()
