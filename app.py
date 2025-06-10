@@ -15,15 +15,14 @@ exchanges = {
     "KuCoin": kucoin
 }
 
-# Exchange-specific trading pairs
+# Updated symbol map: Kraken uses XBT/USD for BTC, KuCoin BTC/USDT
 symbol_map = {
-    "BTC": {"KuCoin": "BTC/USDT"},  # Kraken removed for BTC
+    "BTC": {"Kraken": "XBT/USD", "KuCoin": "BTC/USDT"},
     "ETH": {"Kraken": "ETH/USDT", "KuCoin": "ETH/USDT"},
     "SOL": {"Kraken": "SOL/USDT", "KuCoin": "SOL/USDT"},
-    "XRP": {"Kraken": "XRP/USD", "KuCoin": "XRP/USDT"}
+    "XRP": {"Kraken": "XRP/USD",  "KuCoin": "XRP/USDT"}
 }
 
-# Debug-friendly fetcher
 def fetch_price(exchange_obj, symbol):
     try:
         ticker = exchange_obj.fetch_ticker(symbol)
@@ -33,7 +32,6 @@ def fetch_price(exchange_obj, symbol):
         st.error(f"❌ Error fetching {symbol} from {exchange_obj.id}: {e}")
         return None
 
-# Main loop
 while True:
     for asset, exchange_symbols in symbol_map.items():
         st.subheader(f"📈 Prices for {asset}")
