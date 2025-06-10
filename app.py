@@ -20,7 +20,6 @@ refresh_sec = st.selectbox("Refresh Every (seconds)", [5, 10, 15, 30, 60], index
 exchanges = {
     "Binance": ccxt.binance(),
     "Kraken": ccxt.kraken(),
-    "Coinbase": ccxt.coinbasepro(),
     "KuCoin": ccxt.kucoin(),
     "Bybit": ccxt.bybit(),
 }
