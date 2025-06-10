@@ -4,16 +4,24 @@ import pandas as pd
 import time
 
 st.title("🤖 Arbitrage Scanner")
-st.write("Live arbitrage opportunities between **Kraken** and **KuCoin**")
+st.write("Live arbitrage opportunities between Kraken and KuCoin")
 
-# Exchanges in use
+# Initialize exchanges
+kraken = ccxt.kraken()
+kucoin = ccxt.kucoin()
+
 exchanges = {
-    "Kraken": ccxt.kraken(),
-    "KuCoin": ccxt.kucoin()
+    "Kraken": kraken,
+    "KuCoin": kucoin
 }
 
-# Crypto pairs to track
-symbols = ["BTC/USDT", "ETH/USDT", "SOL/USDT", "XRP/USDT"]
+# Symbol mapping (per exchange)
+symbol_map = {
+    "BTC": {"Kraken": "XBT/USDT", "KuCoin": "BTC/USDT"},
+    "ETH": {"Kraken": "ETH/USDT", "KuCoin": "ETH/USDT"},
+    "SOL": {"Kraken": "SOL/USDT", "KuCoin": "SOL/USDT"},
+    "XRP": {"Kraken": "XRP/USD",  "KuCoin": "XRP/USDT"}
+}
 
 def fetch_price(exchange_obj, symbol):
     try:
@@ -25,14 +33,16 @@ def fetch_price(exchange_obj, symbol):
 
 # Main loop
 while True:
-    for symbol in symbols:
-        st.subheader(f"📈 Prices for {symbol}")
+    for asset, exchange_symbols in symbol_map.items():
+        st.subheader(f"📈 Prices for {asset}")
         prices = {}
 
-        for name, exchange in exchanges.items():
-            price = fetch_price(exchange, symbol)
-            if price:
-                prices[name] = price
+        for exchange_name, exchange_obj in exchanges.items():
+            symbol = exchange_symbols.get(exchange_name)
+            if symbol:
+                price = fetch_price(exchange_obj, symbol)
+                if price:
+                    prices[exchange_name] = price
 
         if len(prices) >= 2:
             df = pd.DataFrame(prices.items(), columns=["Exchange", "Price"]).sort_values(by="Price")
@@ -46,7 +56,7 @@ while True:
             st.success(f"💰 Buy on {low['Exchange']} at {low['Price']:.4f}, "
                        f"Sell on {high['Exchange']} at {high['Price']:.4f} → Profit: {profit_percent:.2f}%")
         else:
-            st.warning(f"⚠️ Not enough data to compare {symbol}")
+            st.warning(f"⚠️ Not enough data for {asset}")
 
     st.write("⏱ Refreshing in 30 seconds...")
     time.sleep(30)
