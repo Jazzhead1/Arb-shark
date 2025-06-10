@@ -51,5 +51,6 @@ while True:
         else:
             st.warning(f"Not enough data for {asset}")
     st.write("Refreshing in 30 seconds...")
-    time.sleep(30)
-    st.experimental_rerun()
+    if st.button("🔄 Refresh Prices"):
+    st.rerun()
+
