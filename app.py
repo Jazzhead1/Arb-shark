@@ -14,7 +14,7 @@ kucoin.load_markets()
 st.write("Kraken markets sample:", list(kraken.markets.keys())[:10])  # Shows first 10 market symbols
 
 symbol_map = {
-    "BTC": {"Kraken": "XBT/USD", "KuCoin": "BTC/USDT"},
+    "BTC": {"Kraken": "XBT/USDT", "KuCoin": "BTC/USDT"},
     "ETH": {"Kraken": "ETH/USDT", "KuCoin": "ETH/USDT"},
     "SOL": {"Kraken": "SOL/USDT", "KuCoin": "SOL/USDT"},
     "XRP": {"Kraken": "XRP/USD", "KuCoin": "XRP/USDT"}
