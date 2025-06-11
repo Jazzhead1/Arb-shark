@@ -16,7 +16,7 @@ kraken.load_markets()
 kucoin.load_markets()
 
 symbol_map = {
-    "BTC": {"Kraken": "BTC/USD", "KuCoin": "BTC/USDT"},
+    "BTC": {"Kraken": "XBT/USDT", "KuCoin": "BTC/USDT"},
     "ETH": {"Kraken": "ETH/USDT", "KuCoin": "ETH/USDT"},
     "SOL": {"Kraken": "SOL/USDT", "KuCoin": "SOL/USDT"},
     "XRP": {"Kraken": "XRP/USD", "KuCoin": "XRP/USDT"}
